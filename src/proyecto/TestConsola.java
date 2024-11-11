@@ -195,14 +195,14 @@ public class TestConsola {
                     System.out.println("Ingrese el mes (en numero)");
                     m = entrada.nextInt();
                         if(Integer.parseInt(m)){
-                            throw IOException("Datos erroneos ingresados desde consola");
+                            throw new IOException("Datos erroneos ingresados desde consola");
                         }
                     System.out.println("Ingrese el la identificacion del cliente");
                     clienteIdentificacion = entrada.nextLine();
 
-                    Cliente c = empresa.buscarCliente(clienteIdentificacion);
+                    Cliente c = empresa.buscarCliente(Long.parseLong(clienteIdentificacion));
                     Cuenta cuenta = c.getCuenta();
-                    if(cuenta instanceof CuentaPostpago({
+                    if(cuenta instanceof CuentaPostpago){
                     CuentaPostpago cuentaPost = (CuentaPostpago) cuenta;
                     System.out.println(reportes.generarReporteCuentaPostpagoEnArchivo(cuentaPost, a, m));
                     }
@@ -219,11 +219,11 @@ public class TestConsola {
                     System.out.println("Vamos a ingresar una fecha para el Reporte de Cuentas Prepago:");
                     System.out.println("(Este reporte incluirá unicamente a clientes con cuentas prepago)");
                     System.out.println("Indique el año");
-                    anio = entrada.nextInt();
+                    anio2 = entrada.nextInt();
                     System.out.println("Indique el mes");
-                    mes = entrada.nextInt();
+                    mes2 = entrada.nextInt();
                     System.out.println("Reporte de Facturación Clientes con Cuenta Prepago:");
-                    reportes.generarReporteRecargas(anio, mes);
+                    reportes.generarReporteRecargas(anio2, mes2);
                     break;
 
                 case 7:
