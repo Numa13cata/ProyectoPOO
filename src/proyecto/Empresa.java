@@ -1,10 +1,11 @@
 package proyecto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Empresa implements IEmpresa {
+public class Empresa implements IEmpresa, Serializable {
     protected ArrayList<Cliente> clientes;
     private String nombre; // nombre de la empresa
     protected ArrayList<Cuenta> cuentas;
@@ -263,29 +264,8 @@ public class Empresa implements IEmpresa {
     //-----------------LOGICA DE REPORTES-----------------
     //Analizar todos los clientes
 
-    public void reporteFacturacionPostpago(int anio, int mes, String clienteIdentificacion)throws CuentaPostPagoException{
 
-        for (Cliente c : this.clientes) {
-            if (c != null) {
-                if (c.getIdentificacion().equals(clienteIdentificacion)) { //aqui ya encontramos el cliente con la misma identificacion
-                    for (Cuenta cta : this.cuentas) {
-                        if (cta.equals(c.getCuenta())) { //aqui buscamos la cuenta del cliente asociado
-                            //si se quiere una cuenta postpago:
-                            if (cta instanceof CuentaPostpago) {
-                                CuentaPostpago cuentaPostpago = (CuentaPostpago) cta;
 
-                            }
-                        }
-                    }
-                }
-            } else {
-                throw new CuentaPostpagoException("No existe el cliente");
-
-            }
-        }
-
-            ManejadorArchivos.generarReporte(cuentaPostpago, anio, mes,c);
-            }
 
 
 }

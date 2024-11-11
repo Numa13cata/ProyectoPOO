@@ -79,7 +79,7 @@ public class ManejoArchivos {
         return -1; //no me dejaba retornar null porque de al metodo le puse que retornara un int
     }
 
-    public void generarReporte(Cuenta cuenta,int  anio,int  mes,Cliente cliente) throw IOException{
+    public void generarReporte(Cuenta cuenta,int  anio,int  mes,Cliente cliente) throws IOException{
         /*
             Aparecer todos los datos de la cuenta postpago del cliente
             Debe aparecer todas las llamadas, ordenadas por fecha en el mes seleccionado
@@ -90,24 +90,23 @@ public class ManejoArchivos {
         */
         try(FileWriter salida = new FileWriter("ReporteFacturacionPostPagoFinDeMes.txt")){ //flujo de escritura
             ArrayList<Llamada> llamadasDelMes = new ArrayList<>(); //esto es como una lista temporal  para guardar las llamadas que se hicieron en el mes que se ingreso por parametro
-            for (CuentaPostpago cuenta : cuentasPostpago){
-                //Ordenar lista de llamadas por fecha
+
                 for(Llamada l: cuenta.getLlamadas()){ //accedemos a la lista de llamadas de cuenta
                     if(l.getFecha().getYear()==anio && l.getFecha().getMonthValue()==mes){ //se verifica que la fecha de la llamada sea igual al mes y año que se ingreso por parametro
                         llamadasDelMes.add(l); //se agrega la llamada a la lista auxiliar
                     }
-                }
+
                 Utils.ordenarLlamadasPorFecha(llamadasDelMes); //ordenamos la lista de llamadas por fecha que esta en la clase utils, se usa el metodo de ordenamiento de burbuja
                 //Escribir en el archivo
-                salida.write("Cuenta Postpago: " + cuenta.toString(); //escribe el toString de la cuenta, toda la info de la cuenta postpago
+                salida.write("Cuenta Postpago: " + cuenta.toString()); //escribe el toString de la cuenta, toda la info de la cuenta postpago
                 //colocar en el archivo la duracion de las llamadas y el valor de las llamadas
                 int totalDuracion = 0;
-                for(Llamada l: llamadasDelMes){
-                    totalDuracion += l.getDuracion();
+                for(Llamada lm: llamadasDelMes){
+                    totalDuracion += lm.getDuracion();
 
                 }
                 salida.write("\nTotal Duracion de Llamadas: " + totalDuracion + " minutos");
-                salida.write("\nTotal Valor de Llamadas: $" + cuenta.obtenerPagoCuenta()+"\n");
+                salida.write("\nTotal Valor de Llamadas: $" + cuenta.ObtenerPagoCuenta()+"\n");
             }
             salida.close();
         }
@@ -116,4 +115,4 @@ public class ManejoArchivos {
 
 }
 
-}
+

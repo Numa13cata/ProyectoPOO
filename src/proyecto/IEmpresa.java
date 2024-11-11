@@ -18,6 +18,6 @@ public interface IEmpresa {
     public Cuenta buscarCuenta (long idCuenta);
     public String concatenar(int indicativo,long telefonoDestinatario);
     public void AgregarUnaRecarga(long id, LocalDate fecha, long valor);
-    public void reporteFacturacionPostpago(int anio, int mes, String clienteIdentificacion);
+
 }
 
