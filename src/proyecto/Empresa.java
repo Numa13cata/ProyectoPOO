@@ -1,23 +1,24 @@
-package proyecto;
+package Proyecto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Empresa implements IEmpresa {
+public class Empresa implements IEmpresa, Serializable {
     protected ArrayList<Cliente> clientes;
     private String nombre; // nombre de la empresa
     protected ArrayList<Cuenta> cuentas;
 
     public Empresa() {
         this.clientes = new ArrayList<Cliente>();
-        this.cuentas=new ArrayList<Cuenta>();
+        this.cuentas = new ArrayList<Cuenta>();
     }
 
     public Empresa(String nombre) {
         this.nombre = nombre;
         this.clientes = new ArrayList<Cliente>();
-        this.cuentas=new ArrayList<Cuenta>();
+        this.cuentas = new ArrayList<Cuenta>();
     }
 
     /**
@@ -65,6 +66,51 @@ public class Empresa implements IEmpresa {
         this.nombre = nombre;
     }
 
+    /**
+     * metodo para establecer los clientes de la empresa
+     * 
+     * @return clientes Retorna la lista de clientes de la empresa
+     */
+    public ArrayList<Cliente> getClientes() {
+        
+        return clientes;
+    }
+
+    /**
+     * Metodo de tipo cuenta que nos sirve para obtener la cuenta de un cliente
+     *
+     * @param cliente  Cliente de tipo cliente
+     * @return cliente.getCuenta() Retorna la cuenta del cliente
+     *
+     */
+    public Cuenta getCuentaDeCliente(Cliente cliente) {
+        return cliente.getCuenta();
+    }
+
+    /**
+     * Metodo de tipo ArrayList de Llamada que va a ayudarnos a ordenar las llamadas
+     * por fecha
+     *
+     * @param llamadas  La lista de llamadas desordenada
+     * @return llamadas La lista de llamadas ordenada
+     *
+     */
+    public ArrayList<Llamada> ordenarLlamadasPorFecha(ArrayList<Llamada> llamadas) {
+        llamadas.sort(Comparator.comparing(Llamada::getFecha));
+        return llamadas;
+    }
+
+    /**
+     * Metodo de tipo ArrayList de Recarga que va a ordenar una lista de recargas
+     *
+     * @param recargas  La lista de recarga desordenada
+     * @return recargas La lista de recargas ordenada
+     *
+     */
+    public ArrayList<Recarga> ordenarRecargasPorFecha(ArrayList<Recarga> recargas) {
+        recargas.sort(Comparator.comparing(Recarga::getFecha));
+        return recargas;
+    }
     /**
      * metodo para establecer los clientes de la empresa
      */
