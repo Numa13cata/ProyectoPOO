@@ -10,7 +10,7 @@ public class Utils {
      no se repetira el valor y sera consecutivo al incrementarala. Por ejemplo si no utilizaramos esta clase ni este atributo estatico y utilizaramos
      una variable se reiniciaria el valor cada vez que instanciaramos una cuenta.
      */
-    public static void ordenarLlamadasPorFecha(ArrayList<Llamada> llamadas){
+    public static ArrayList ordenarLlamadasPorFecha(ArrayList<Llamada> llamadas){
         for(int i=0;i<llamadas.size();i++){
             for(int j=0;j<llamadas.size()-1;j++){
                 if(llamadas.get(j).getFecha().isAfter(llamadas.get(j+1).getFecha())){
@@ -20,5 +20,7 @@ public class Utils {
                 }
             }
         }
+        return llamadas;
     }
+
 }

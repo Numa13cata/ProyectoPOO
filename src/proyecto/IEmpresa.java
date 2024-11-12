@@ -8,16 +8,22 @@ public interface IEmpresa {
     /**
      * metodo abstracto para establecer los clientes de la empresa
      */
-    public ArrayList getClientes();
-    public void LlenarListaClientes(String direccion,String identificacion, String nombre);
+    public ArrayList<Cuenta> getCuentas();
+    public void setCuentas(ArrayList<Cuenta> cuentas);
+    public void setClientes(ArrayList<Cliente> clientes);
+    public void setNombre(String nombre);
+    public ArrayList<Cliente> getClientes();
+    public Cuenta getCuentaDeCliente(Cliente cliente);
+    public ArrayList<Recarga> ordenarRecargasPorFecha(ArrayList<Recarga> recargas);
+    public ArrayList<Cliente> ClientesOrdenados(ArrayList<Cliente> clientes);
+    public void LlenarListaClientes(String direccion, String identificacion, String nombre);
     public void LlenarListaClientesArchivo(ArrayList<Cliente> clientesArchivo);
-    public Long AgregarCuentaPostpago(String nombre,Long numero) throws CuentaPostpagoException;
-    public Long AgregarCuentaPrepago (String nombre, Long numero);
+    public long AgregarCuentaPostpago(String nombre, long numero);
     public Llamada AgregarLlamadaNacional (long idCuenta, LocalDate fecha, long telefonoDestinatario, long duracionMinutos);
     public Llamada AgregarLlamadaInternacional (long idCuenta, LocalDate fecha, long telefonoDestinatario, long duracionMinutos, String paisDestino, int indicativo);
-    public Cuenta buscarCuenta (long idCuenta);
-    public String concatenar(int indicativo,long telefonoDestinatario);
-    public void AgregarUnaRecarga(long id, LocalDate fecha, long valor);
+    public Cuenta buscarCuenta(long idCuenta);
+    public Cliente buscarCliente(long idCliente);
+    public long AgregarCuentaPrepago(String nombre, long numero);
 
 }
 

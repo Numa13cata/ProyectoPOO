@@ -7,10 +7,10 @@ public class Cliente {
     private String tipoId="Cedula";
     private Cuenta cuenta;
 
-    public Cliente(String nombre, String direccion, String identificacion, Cuenta cuenta) {// metodo constructor
+    public Cliente(String nombre,String identificacion, String direccion, Cuenta cuenta) {// metodo constructor
         this.nombre = nombre;
-        this.direccion = direccion;
         this.identificacion = identificacion;
+        this.direccion = direccion;
         this.tipoId = "Cedula";
         this.cuenta = cuenta;
     }

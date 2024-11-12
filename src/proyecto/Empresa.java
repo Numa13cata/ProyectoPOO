@@ -1,6 +1,7 @@
 package proyecto;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,13 +13,13 @@ public class Empresa implements IEmpresa, Serializable {
 
     public Empresa() {
         this.clientes = new ArrayList<Cliente>();
-        this.cuentas=new ArrayList<Cuenta>();
+        this.cuentas = new ArrayList<Cuenta>();
     }
 
     public Empresa(String nombre) {
         this.nombre = nombre;
         this.clientes = new ArrayList<Cliente>();
-        this.cuentas=new ArrayList<Cuenta>();
+        this.cuentas = new ArrayList<Cuenta>();
     }
 
     /**
@@ -68,12 +69,24 @@ public class Empresa implements IEmpresa, Serializable {
 
     /**
      * metodo para establecer los clientes de la empresa
+     *
+     * @return clientes Retorna la lista de clientes de la empresa
      */
     public ArrayList<Cliente> getClientes() {
+
         return clientes;
     }
 
-
+    /**
+     * Metodo de tipo cuenta que nos sirve para obtener la cuenta de un cliente
+     *
+     * @param cliente  Cliente de tipo cliente
+     * @return cliente.getCuenta() Retorna la cuenta del cliente
+     *
+     */
+    public Cuenta getCuentaDeCliente(Cliente cliente) {
+        return cliente.getCuenta();
+    }
     @Override
     public String toString() {
         return "Empresa{" +
@@ -82,10 +95,35 @@ public class Empresa implements IEmpresa, Serializable {
                 ", cuentas=" + cuentas +
                 '}';
     }
+
+    /**
+     * Metodo de tipo ArrayList de Recarga que va a ordenar una lista de recargas
+     *
+     * @param recargas  La lista de recarga desordenada
+     * @return recargas La lista de recargas ordenada
+     *
+     */
+
+    public ArrayList<Recarga> ordenarRecargasPorFecha(ArrayList<Recarga> recargas) {
+        recargas.sort(Comparator.comparing(Recarga::getFecha));
+        return recargas;
+    }
+    /**
+     * metodo para establecer los clientes de la empresa
+     */
+
+
+
+    public ArrayList<Cliente> ClientesOrdenados(ArrayList<Cliente> clientes) {
+        clientes.sort(Comparator.comparing(Cliente::getIdentificacion));
+        return clientes;
+    }
+
+
     //metodo para llenar lista de clientes ingresando los datos por consola
     public void LlenarListaClientes(String direccion,String identificacion, String nombre) throws EmpresaException{
         Cuenta cuenta=null;
-        Cliente cliente=new Cliente(nombre,direccion,identificacion,cuenta); //ya cree un cliente
+        Cliente cliente=new Cliente(nombre,identificacion,direccion,cuenta); //ya cree un cliente
 
         // Verificacion
         for (Cliente c : this.getClientes()){
@@ -98,6 +136,7 @@ public class Empresa implements IEmpresa, Serializable {
 
         this.clientes.add(cliente); //lo añado a la lista llamada clientes
         System.out.println("Cliente agregado" + cliente);
+        System.out.println(this.toString());
     }
 
     public void LlenarListaClientesArchivo(ArrayList<Cliente> clientesArchivo){
@@ -108,15 +147,14 @@ public class Empresa implements IEmpresa, Serializable {
         }
     }
 
-    public Long AgregarCuentaPostpago(String nombre,Long numero) throws CuentaPostpagoException{
+    public long AgregarCuentaPostpago(String nombre,long numero) throws CuentaPostpagoException{
         //vamos a buscar en la lista de clientes, el cliente que tenga el nombre del parametro
         Cuenta cuenta = null;
         System.out.println("Nombre que entra: " + nombre);
         for(Cliente c: this.clientes){
             if(c!=null){
-                if(c.getNombre().equals(nombre)){ //verifica si el cliente tiene el mismo nombre
+                if(c.getNombre().equalsIgnoreCase(nombre)){ //verifica si el cliente tiene el mismo nombre
                     System.out.println(c.getNombre());
-                    System.out.println(nombre); //aca muestra que tiene el mismo nombre
                     CuentaPostpago cuentaPostpago =new CuentaPostpago(numero); //se crea la cuenta postpago con el numero que queria el usuario
                     c.setCuenta(cuentaPostpago); //se le agrega al cliente el atributo de la cuenta
                     cuentas.add(cuentaPostpago);
@@ -124,9 +162,12 @@ public class Empresa implements IEmpresa, Serializable {
                     return cuentaPostpago.getId(); //se retorna el id para acceder a el en el main y poder mostrarlo
                 }
 
+            }else{
+                throw new CuentaPostpagoException("No existe una cuenta con el nombre " + nombre);
             }
         }
-        throw new CuentaPostpagoException("No se encontro el cliente: "+nombre);
+        return -1;
+
     }
 
     public Llamada AgregarLlamadaNacional (long idCuenta, LocalDate fecha, long telefonoDestinatario, long duracionMinutos){
@@ -222,20 +263,33 @@ public class Empresa implements IEmpresa, Serializable {
         return null;
     }
 
+    public Cliente buscarCliente(long idCliente) {
+        for (Cliente c : this.clientes) {
+            if (c != null) {
+                long num = Long.parseLong(c.getIdentificacion());
+                if (num == idCliente) {
+                    return c;
+                }
+            }
+        }
+        return null;
+    }
 
 
-    public Long AgregarCuentaPrepago (String nombre, Long numero)throws CuentaPrepagoException {
+    public long AgregarCuentaPrepago (String nombre, long numero)throws CuentaPrepagoException {
         for (Cliente c : clientes){
-            if (c != null){
-                if (c.getNombre().equals(nombre)){
-                    CuentaPrepago cuentaPrepago = new CuentaPrepago(numero);
+
+                System.out.println(this.toString());
+                if (c.getNombre().equalsIgnoreCase(nombre)){
+                    CuentaPrepago cuentaPrepago= new CuentaPrepago(numero);
                     c.setCuenta(cuentaPrepago); //no olvidar añadir el atributo de Cliente ya que estaba null
                     cuentas.add(cuentaPrepago); //se añade a la lista de cuentas
                     return cuentaPrepago.getId();
                 }
-            }
+
         }
-        throw new CuentaPrepagoException("No existe una cuenta con el nombre " + nombre);
+        return -1;
+
     }
 
     public String concatenar(int indicativo,long telefonoDestinatario){
@@ -260,9 +314,24 @@ public class Empresa implements IEmpresa, Serializable {
 
     }
 
+ /*public void crearCuenta(String nombre, long telefono, String nomCuenta){
+     if (nomCuenta.equalsIgnoreCase("Postpago")) {
+         CuentaPostpago cuenta = new CuentaPostpago(telefono);
+     }else if(nomCuenta.equalsIgnoreCase("Prepago")){
+         CuentaPrepago cuenta = new CuentaPrepago(telefono);
 
-    //-----------------LOGICA DE REPORTES-----------------
-    //Analizar todos los clientes
+     }
+        for(Cliente c:clientes){
+            if(c.getNombre().equalsIgnoreCase(nombre)){
+
+                c.setCuenta(cuenta);
+                cuentas.add(cuenta);
+               break;
+            }
+        }
+
+ }
+*/
 
 
 

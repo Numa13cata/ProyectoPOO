@@ -7,16 +7,15 @@ import java.util.Scanner;
 import static java.lang.System.exit;
 
 public class TestConsola {
-    // private static IEmpresa empresa;
     public static void main(String[] args) throws IOException {
         Scanner entrada = new Scanner(System.in);
         System.out.println("Cual es el nombre de tu empresa");
         String nombreEmpresa = entrada.nextLine();
         Empresa empresa = new Empresa(nombreEmpresa);
         ManejoArchivos reportes = new ManejoArchivos();
-
+        String workingDirectory = System.getProperty("user.dir");
+        System.out.println("Working Directory: " + workingDirectory);
         int op;
-        entrada.nextLine();
         do {
             System.out.println("Bienvenido al menu");
             System.out.println("1. Ingresar clientes");
@@ -32,23 +31,25 @@ public class TestConsola {
             entrada.nextLine();
 
             switch (op) {
-                case 1:// Ingresar clientes
+                case 1:
                     int op2;
                     System.out.println("Ingrese una opcion");
                     System.out.println("1. Seleccionar archivo de clientes");
                     System.out.println("2.Ingresar los datos manualmente ");
                     System.out.println("3. Regresar al menú de servicios");
                     op2 = entrada.nextInt();
-                    entrada.nextLine(); // esto es como un cin.ignore
+                    entrada.nextLine();
                     switch (op2) {
                         case 1:
                             ArrayList<Cliente> clientes = new ArrayList<>();
                             System.out.println("Ingrese el nombre el nombre del archivo");
                             String nombreArchivo = entrada.nextLine();
-                            clientes = ManejoArchivos.cargaTexto("Proyecto/Clientes.txt");
+                            clientes = ManejoArchivos.cargaTexto("Clientes.txt");
+                            System.out.println("Se cargaron los clientes correctamente");
                             empresa.LlenarListaClientesArchivo(clientes);
+                            System.out.println(empresa.toString());
                             break;
-                        case 2: // el usuario ingresa los datos de los clientes por consola
+                        case 2:
                             String opcion;
                             System.out.println("Ingrese los datos del cliente");
                             System.out.println("Ingrese direccion");
@@ -59,9 +60,7 @@ public class TestConsola {
                             String nombre = entrada.nextLine();
                             do {
                                 try {
-                                    empresa.LlenarListaClientes(direccion, identificacion, nombre); // metodo que añade
-                                    // un Cliente a la
-                                    // lista clientes
+                                    empresa.LlenarListaClientes(direccion, identificacion, nombre);
                                 } catch (EmpresaException e) {
                                     System.out.println(e.getMessage());
                                 }
@@ -69,20 +68,17 @@ public class TestConsola {
                                 opcion = entrada.nextLine();
                             } while (!opcion.equalsIgnoreCase("No"));
                             break;
-
                         case 3:
-                            // Regresar al menu inicial
                             break;
                         default:
                             System.out.println("Opcion invalida");
                             break;
                     }
-                    break; // break del case 1
-                case 2:// opcion agregar cuenta
-                    entrada.nextLine();
+                    break;
+                case 2:
                     String nomCuenta;
                     String nombre;
-                    Long numero;
+                    long numero;
                     System.out.println("Ingrese si la cuenta que quiere crear es Postpago o Prepago");
                     nomCuenta = entrada.nextLine();
                     System.out.println("Ingrese el nombre del cliente");
@@ -94,6 +90,7 @@ public class TestConsola {
                         try {
                             long id = empresa.AgregarCuentaPostpago(nombre, numero);
                             System.out.println("La cuenta postpago se creo con el id: " + id);
+                            System.out.println(empresa.toString());
                         } catch (CuentaPostpagoException e) {
                             System.out.println(e.getMessage());
                         }
@@ -110,7 +107,6 @@ public class TestConsola {
                     break;
                 case 3:
                     long id;
-                    entrada.nextLine();
                     System.out.println("Ingrese el id de la cuenta");
                     id = entrada.nextLong();
                     entrada.nextLine();
@@ -123,35 +119,30 @@ public class TestConsola {
                     int month = entrada.nextInt();
                     System.out.println("Ingrese el dia");
                     int day = entrada.nextInt();
-                    LocalDate fecha = LocalDate.of(year, month, day); // se arma la fecha
+                    LocalDate fecha = LocalDate.of(year, month, day);
                     entrada.nextLine();
                     System.out.println("Indique el telefono destinatario");
                     long telefonoDestinatario = entrada.nextLong();
                     System.out.println("Ingrese la duracion en minutos");
                     long duracionMinutos = entrada.nextLong();
                     entrada.nextLine();
-                    int indicativo; //indicativo del pais
+                    int indicativo;
                     if (nombre.equalsIgnoreCase("Internacional")) {
-                        System.out.println("Ingrese el pais de destino"); //como es una llamada internacional tiene un atributo adicional
+                        System.out.println("Ingrese el pais de destino");
                         String paisDestino = entrada.nextLine();
-                        indicativo=ManejoArchivos.encontrarIndicador(paisDestino); //se llama al metodo de ManejoArchivos para que encuentre el indicativo dependiendo del pais
-                        Llamada llamadaRetorno=null;
+                        indicativo = ManejoArchivos.encontrarIndicador(paisDestino);
+                        Llamada llamadaRetorno = null;
                         try {
-
-                            llamadaRetorno= empresa.AgregarLlamadaInternacional(id, fecha, telefonoDestinatario, duracionMinutos, paisDestino,indicativo); //el id es para indicar en cual cuenta
+                            llamadaRetorno = empresa.AgregarLlamadaInternacional(id, fecha, telefonoDestinatario, duracionMinutos, paisDestino, indicativo);
                         } catch (EmpresaException e) {
-
                             System.out.println(e.getMessage());
                         }
-                        String telefonoCompleto=empresa.concatenar(indicativo,telefonoDestinatario);
-
-                        System.out.println("Se adiciono correctamente la llamada Internacional para el numero: " + telefonoCompleto+" con un costo de "+llamadaRetorno.getValor());
-
-
+                        String telefonoCompleto = empresa.concatenar(indicativo, telefonoDestinatario);
+                        System.out.println("Se adiciono correctamente la llamada Internacional para el numero: " + telefonoCompleto + " con un costo de " + llamadaRetorno.getValor());
                     } else if (nombre.equalsIgnoreCase("Nacional")) {
                         try {
                             Llamada llamadaRetorno = empresa.AgregarLlamadaNacional(id, fecha, telefonoDestinatario, duracionMinutos);
-                            System.out.println("Se creo la llamada nacional con costo: " + llamadaRetorno.valor); //se quiso mostrar el costo para ver si calcularValor() funciona
+                            System.out.println("Se creo la llamada nacional con costo: " + llamadaRetorno.valor);
                         } catch (EmpresaException e) {
                             System.out.println(e.getMessage());
                         }
@@ -163,10 +154,9 @@ public class TestConsola {
                     long valor_recarga;
                     long id_cuenta;
                     LocalDate fecha_recarga;
-                    int ms; // mes
-                    int an; // año
-                    int d; // dia
-
+                    int ms;
+                    int an;
+                    int d;
                     System.out.println("Ingrese el id de la cuenta");
                     id_cuenta = entrada.nextLong();
                     System.out.println("Ingrese el año");
@@ -175,7 +165,7 @@ public class TestConsola {
                     ms = entrada.nextInt();
                     System.out.println("Ingrese el dia");
                     d = entrada.nextInt();
-                    fecha_recarga = LocalDate.of(an, ms, d); // se arma la fecha
+                    fecha_recarga = LocalDate.of(an, ms, d);
                     System.out.println("Ingrese el valor de la recarga");
                     valor_recarga = entrada.nextLong();
                     try {
@@ -184,36 +174,30 @@ public class TestConsola {
                         System.out.println(e.getMessage());
                     }
                     System.out.println("Se hizo la recarga con exito ");
-
-                    return; // se puso return porque en el enunciado dice que regresar al menu de servicios
-                case 5: // generar reporte de cuenta postpago
-                    int a, m; // año y mes
+                    break;
+                case 5:
+                    int a, m;
                     String clienteIdentificacion;
-                    try{
+                    try {
                         System.out.println("Ingrese el año");
                         a = entrada.nextInt();
                         System.out.println("Ingrese el mes (en numero)");
                         m = entrada.nextInt();
-                        if(Integer.parseInt(m)){
-                            throw new IOException("Datos erroneos ingresados desde consola");
-                        }
+                        entrada.nextLine();
                         System.out.println("Ingrese el la identificacion del cliente");
                         clienteIdentificacion = entrada.nextLine();
-
                         Cliente c = empresa.buscarCliente(Long.parseLong(clienteIdentificacion));
                         Cuenta cuenta = c.getCuenta();
-                        if(cuenta instanceof CuentaPostpago){
+                        if (cuenta instanceof CuentaPostpago) {
                             CuentaPostpago cuentaPost = (CuentaPostpago) cuenta;
                             System.out.println(reportes.generarReporteCuentaPostpagoEnArchivo(cuentaPost, a, m));
                         }
+                    } catch (ArchivoException exc) {
+                        System.out.println("El reporte no pudo ser procesado en el archivo");
+                    } catch (CuentaPostpagoException e) {
+                        System.out.println("El cliente no tiene cuentas postpago");
                     }
-                    catch(ArchivoException exc){
-                        System.out.println("El reporte no pudo ser procesado en el archivo");}
-                    catch(CuentaPostpagoException e){
-                        System.out.println("El cliente no tiene cuentas postpago");}
-
                     break;
-
                 case 6:
                     int anio2, mes2;
                     System.out.println("Vamos a ingresar una fecha para el Reporte de Cuentas Prepago:");
@@ -225,11 +209,9 @@ public class TestConsola {
                     System.out.println("Reporte de Facturación Clientes con Cuenta Prepago:");
                     reportes.generarReporteRecargas(anio2, mes2);
                     break;
-
                 case 7:
                     String nomarchi = " ";
                     String ruta = " ";
-
                     try {
                         System.out.println("A continuación se guardará la empresa en un archivo\n");
                         System.out.println("Ingresa un nombre para el archivo\n");
@@ -245,9 +227,8 @@ public class TestConsola {
                 case 8:
                     Empresa empresacargada = null;
                     String rutaArchivo = "empresa.dat";
-
                     try {
-                        empresa = deserializar(nombreArchivo);
+                        empresa = reportes.Deserializar(rutaArchivo);
                         System.out.println("sistema cargado exitosamente!");
                     } catch (ArchivoException e) {
                         System.out.println("error al cargar el archivo: " + e.getMessage());
@@ -256,17 +237,12 @@ public class TestConsola {
                     } catch (Exception e) {
                         System.out.println("ocurrió un error inesperado al cargar los datos: " + e.getMessage());
                     }
-
-                    empresa = deserializar(nombreArchivo);
                     break;
-
                 case 9:
                     exit(1);
-
                 default:
                     break;
             }
-
-        } while (entrada.nextInt() != 9);// mostrar el menu hasta que el usuario ingrese 9
+        } while (op != 9);
     }
 }
